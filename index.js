@@ -69,7 +69,7 @@ app.use('/static', express.static(__dirname + '/static', {
 	maxAge: 3600 * 1000 * 24
 }));
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
 	res.render('index', {
 		items: [{
 			description: 'Listen to podcasts with the Podle Web App.',
@@ -80,17 +80,29 @@ app.get('/', function (req, res) {
 				type: 'image/png'
 			},
 			background_color: 'white',
-			theme_color: '#4E3F30'
-		},{
-			description: 'Listen to podcasts with the Podle Web App.',
-			name: 'Podle',
-			icons: {
-				src: 'https://podle.audio/static/icon512.png',
-				sizes: 512,
-				type: 'image/png'
+			theme_color: '#4E3F30',
+			"url": 'https://podle.audio/'
+		}, {
+			"description": "An Air horn. Probably the best air horn web app there is.",
+			"name": "The Air Horner",
+			"icons": {
+				"src": "https://airhorner.com/images/touch/Airhorner_512.png",
+				"type": "image/png",
+				"sizes": 512
 			},
-			background_color: 'white',
-			theme_color: '#4E3F30'
+			"background_color": "#2196F3",
+			"theme_color": "#2196F3",
+			"url": 'https://airhorner.com/'
+		}, {
+			"description": "Speed through ruined tracks in the ocean.",
+			"name": "A-Frame Racer",
+			"icons": {
+				"src": "https://samsunginternet.github.io/a-frame-demos/racer/icon192.png",
+				"sizes": 512
+			},
+			"background_color": "white",
+			"theme_color": "#8953D8",
+			"url": "https://samsunginternet.github.io/a-frame-demos/racer/"
 		}]
 	});
 });
@@ -108,6 +120,7 @@ app.get('/get-app-data', function(req, res) {
 		.catch(e => {
 			res.status(500);
 			res.end(e.message);
+			console.log(e);
 		});
 });
 

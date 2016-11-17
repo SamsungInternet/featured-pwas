@@ -1,0 +1,22 @@
+{
+  "name": "Featured Web Apps",
+  "short_name": "Web Apps",
+  "icons": [
+    {
+      "src": "icon192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "gcm_sender_id": "688501481129",
+  "fcm_sender_id": "688501481129",
+  "background_color": "#987fff",
+  "theme_color": "#987fff"
+}

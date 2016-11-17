@@ -4,6 +4,7 @@
 const promisify = require('es6-promisify');
 const env = promisify(require('jsdom').env);
 const fetch = require('node-fetch');
+const url = require('url');
 
 function isOk(response) {
 	if (!response.ok) {
@@ -18,19 +19,29 @@ function buildWidget(manifest, pageData) {
 		sizes: pageData.icons[0].getAttribute('sizes')
 	})) || [];
 	manifest.icons = manifest.icons.concat(icons);
-	manifest.icons.forEach(i => i.sizes = parseInt(i.sizes));
+	manifest.icons.forEach(i => {
+		i.sizes = parseInt(i.sizes);
+		if (i.src && !i.src.match(/^https?:/i)) {
+			if (i.src.match(/^\//)) {
+				i.src = pageData.urlPath + i.src;
+			} else {
+				i.src = pageData.manifestPath + i.src;
+			}
+		}
+	});
 	const output = {};
 	output.description = pageData.description;
 	output.name = manifest.name || manifest.shortname || pageData.title;
 	output.icons = manifest.icons.reduce((a,b) => a.sizes > b.sizes ? a : b);
 	output.background_color = manifest.background_color;
 	output.theme_color = manifest.theme_color || pageData.theme_color;
+	output.url = pageData.url;
 	return output;
 }
 
-function getWebAppData(url) {
-	console.log('fetching', url);
-	return env(url, [])
+function getWebAppData(urlIn) {
+	console.log('fetching', urlIn);
+	return env(urlIn, [])
 		.then(window => {
 			const output = {};
 			output.icons = Array.from(window.document.querySelectorAll('link[rel="icon"]'));
@@ -50,8 +61,13 @@ function getWebAppData(url) {
 				output.theme_color = theme_color.content;
 			}
 
+			output.url = urlIn;
+
 			const manifest = window.window.document.querySelector('link[rel="manifest"]');
 			if (manifest) {
+				const a = url.parse(manifest.href);
+				output.manifestPath = a.protocol + '//' + a.host + a.pathname.match(/(.*)\/[^\/]*$/)[1] + '/';
+				output.urlPath = a.protocol + '//' + a.host;
 				return fetch(manifest.href)
 					.then(isOk)
 					.then(response => response.json())

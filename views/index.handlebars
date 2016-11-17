@@ -7,18 +7,22 @@
 		<link rel="icon" sizes="192x192" href="launcher-icon-4x.png">
 		<link href='/static/fonts/SamsungOne/fonts.css' rel='stylesheet' type='text/css'>
 		<link href='/static/style.css' rel='stylesheet' type='text/css'>
-		<!--<link rel="manifest" href="/static/manifest.json">-->
+		<link rel="manifest" href="/static/manifest.json">
 		<title>Featured PWAs</title>
 	</head>
 	<body>
-		<div id="installing-pwas" class="widget">If you see the '+' icon try pressing it to add an app to your homescreen, it should work offline. Try it here!</div>
-		<h1>Featured PWA</h1>
+		<div id="installing-pwas" class="widget-container">
+		<div class="widget">If you see the '+' icon try pressing it to add an app to your homescreen, it should work offline. Try it here!</div>
+		</div>
 		{{#each items}}
 		{{#if @first}}
-		<div id="featured-pwa" class="widget-container">{{> widget }}</div>
-		<h1>You may also like...</h1>
+		<div id="featured-pwa" class="widget-container">
+			<h1>Featured PWA</h1>
+			{{> widget }}
+		</div>
 		<div id="others" class="widget-container">
-		{{else}}{{> widget }}{{/if}}
+			<h1>You may also like...</h1>
+			{{else}}{{> widget }}{{/if}}
 		{{/each}}
 		</div>
 	</body>
