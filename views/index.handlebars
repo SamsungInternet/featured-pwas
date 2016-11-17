@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="description" content="Featured PWAs picked by the Samsung Internet team.">
+		<link rel="icon" type="image/ico" href="favicon.ico">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0,target-densitydpi=device-dpi, minimal-ui" />
+		<link rel="icon" sizes="192x192" href="launcher-icon-4x.png">
+		<link href='/static/fonts/SamsungOne/fonts.css' rel='stylesheet' type='text/css'>
+		<link href='/static/style.css' rel='stylesheet' type='text/css'>
+		<!--<link rel="manifest" href="/static/manifest.json">-->
+		<title>Featured PWAs</title>
+	</head>
+	<body>
+		<div id="installing-pwas" class="widget">If you see the '+' icon try pressing it to add an app to your homescreen, it should work offline. Try it here!</div>
+		<h1>Featured PWA</h1>
+		{{#each items}}
+		{{#if @first}}
+		<div id="featured-pwa" class="widget-container">{{> widget }}</div>
+		<h1>You may also like...</h1>
+		<div id="others" class="widget-container">
+		{{else}}{{> widget }}{{/if}}
+		{{/each}}
+		</div>
+	</body>
+</html>

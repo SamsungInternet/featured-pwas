@@ -1,0 +1,22 @@
+{
+  "name": "featured-pwas",
+  "version": "1.0.0",
+  "description": "Small site for show casing PWAs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "es6-promisify": "^5.0.0",
+    "jsdom": "^9.8.3",
+    "color": "0.8.x",
+    "node-fetch": "^1.6.3",
+    "helmet": "^2.2.0",
+    "helmet-csp": "^1.2.2",
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0"
+  }
+}
