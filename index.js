@@ -115,7 +115,11 @@ app.get('/get-app-data', function(req, res) {
 	}
 	getWebAppData(req.query.url)
 		.then(data => {
-			res.json(data);
+			res.render('index', {
+				items: [data],
+				confirm: true,
+				url: req.url
+			});
 		})
 		.catch(e => {
 			res.status(500);
