@@ -9,6 +9,18 @@ const exphbs = require('express-handlebars');
 const helmet = require('helmet');
 const csp = require('helmet-csp');
 const color = require('color');
+const bluebird = require('bluebird');
+const redis = require('redis');
+
+const REDIS_INDEX_KEY = "INDEX_V2";
+const REDIS_ENTRY_NAMESPACE = "ENTRY_V1_";
+
+bluebird.promisifyAll(redis.RedisClient.prototype);
+bluebird.promisifyAll(redis.Multi.prototype);
+
+const client = redis.createClient({
+	url: process.env.REDIS_URL
+});
 
 const app = express();
 
@@ -69,41 +81,12 @@ app.use('/static', express.static(__dirname + '/static', {
 	maxAge: 3600 * 1000 * 24
 }));
 
-app.get('/', function(req, res) {
-	res.render('index', {
-		items: [{
-			description: 'Listen to podcasts with the Podle Web App.',
-			name: 'Podle',
-			icons: {
-				src: 'https://podle.audio/static/icon512.png',
-				sizes: 512,
-				type: 'image/png'
-			},
-			background_color: 'white',
-			theme_color: '#4E3F30',
-			"url": 'https://podle.audio/'
-		}, {
-			"description": "An Air horn. Probably the best air horn web app there is.",
-			"name": "The Air Horner",
-			"icons": {
-				"src": "https://airhorner.com/images/touch/Airhorner_512.png",
-				"type": "image/png",
-				"sizes": 512
-			},
-			"background_color": "#2196F3",
-			"theme_color": "#2196F3",
-			"url": 'https://airhorner.com/'
-		}, {
-			"description": "Speed through ruined tracks in the ocean.",
-			"name": "A-Frame Racer",
-			"icons": {
-				"src": "https://samsunginternet.github.io/a-frame-demos/racer/icon192.png",
-				"sizes": 512
-			},
-			"background_color": "white",
-			"theme_color": "#8953D8",
-			"url": "https://samsunginternet.github.io/a-frame-demos/racer/"
-		}]
+app.get('/', function (req, res) {
+	client.smembersAsync(REDIS_INDEX_KEY).then(data => {
+		const toFetch = data.reverse().slice(0, 10).map(a => client.getAsync(a));
+		return Promise.all(toFetch)
+			.then(items => items.map(j => JSON.parse(j)))
+			.then(items => res.render('index', { items }));
 	});
 });
 
@@ -115,11 +98,21 @@ app.get('/get-app-data', function(req, res) {
 	}
 	getWebAppData(req.query.url)
 		.then(data => {
-			res.render('index', {
-				items: [data],
-				confirm: true,
-				url: req.url
-			});
+			const key = REDIS_ENTRY_NAMESPACE + req.query.url;
+			if (req.query.confirm) {
+				client.setAsync(key, JSON.stringify(data))
+					.then(() => client.expireAsync(key, 3600 * 24 * 30))
+					.then(() => client.saddAsync(REDIS_INDEX_KEY, key))
+					.then(() => client.scardAsync(REDIS_INDEX_KEY).then(no => console.log(no)))
+					.then(() => res.redirect('/'))
+					.catch(e => console.log(e.message));
+			} else {
+				res.render('index', {
+					items: [data],
+					confirm: true,
+					url: req.url
+				});
+			}
 		})
 		.catch(e => {
 			res.status(500);
