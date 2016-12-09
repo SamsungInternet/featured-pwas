@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "color": "0.8.x",
     "commander": "^2.9.0",
     "es6-promisify": "^5.0.0",
