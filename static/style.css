@@ -46,9 +46,10 @@ h1 {
 	border: 1px solid;
 	border-color: dark-grey;
     max-width: 380px;
-    min-width: 380px;
+	width: 380px;
 	display: inline-block;
 	flex-grow: 1;
+	flex-shrink: 1;
 	background: white;
 }
 
