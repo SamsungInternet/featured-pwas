@@ -31,7 +31,9 @@ h1 {
 .widget-container {
     display: flex;
     flex-wrap: wrap;
-	justify-content: space-around;
+    justify-content: space-around;
+    flex-shrink: 1;
+    min-width: 0;
 }
 
 .widget-container h1, .widget-container h2 {
