@@ -12,8 +12,8 @@ const color = require('color');
 const bluebird = require('bluebird');
 const redis = require('redis');
 
-const REDIS_INDEX_KEY = "INDEX_V3";
-const REDIS_ENTRY_NAMESPACE = "ENTRY_V3_";
+const REDIS_INDEX_KEY = "INDEX_V4";
+const REDIS_ENTRY_NAMESPACE = "ENTRY_V4_";
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
@@ -112,6 +112,7 @@ app.get('/save/', function (req, res) {
 	getWebAppData(req.query.url)
 		.then(data => {
 			data.category = req.query.category.constructor === Array ? req.query.category : [req.query.category];
+			data.timestamp = Date.now();
 			const key = REDIS_ENTRY_NAMESPACE + req.query.url;
 			return client.setAsync(key, JSON.stringify(data))
 				.then(() => client.expireAsync(key, 3600 * 24 * 30))
