@@ -8,12 +8,33 @@
 		<link href='/static/fonts/SamsungOne/fonts.css' rel='stylesheet' type='text/css'>
 		<link href='/static/style.css' rel='stylesheet' type='text/css'>
 		<link rel="manifest" href="/static/manifest.json">
+		<script defer src="/sw-toolbox/companion.js" data-service-worker="/sw.js"></script>
 		<title>Featured PWAs</title>
 	</head>
 	<body>
 		{{#if confirm}}
-			<a href="{{url}}&confirm=1"><button id="confirm">Okay!!</button></a>
+		{{#each items}}
+		{{> widget }}
+		{{/each}}
+		<form class="confirm" action="/save/">
+			<div class="select">
+				<input type="checkbox" name="category" id="check-all" value="all"><label for="check-all">all</label>
+				<input type="checkbox" name="category" id="check-business" value="business"><label for="check-business">business</label>
+				<input type="checkbox" name="category" id="check-demo" value="demo"><label for="check-demo">demo</label>
+				<input type="checkbox" name="category" id="check-event" value="event"><label for="check-event">event</label>
+				<input type="checkbox" name="category" id="check-game" value="game"><label for="check-game">game</label>
+				<input type="checkbox" name="category" id="check-news" value="news"><label for="check-news">news</label>
+				<input type="checkbox" name="category" id="check-reference" value="reference"><label for="check-reference">reference</label>
+				<input type="checkbox" name="category" id="check-shopping" value="shopping"><label for="check-shopping">shopping</label>
+				<input type="checkbox" name="category" id="check-social" value="social"><label for="check-social">social</label>
+				<input type="checkbox" name="category" id="check-tool" value="tool"><label for="check-tool">tool</label>
+				<input type="checkbox" name="category" id="check-other" value="other"><label for="check-other">other</label>
+			</div>
+			<input type="text" value="{{url}}" name="url" />
+			<input type="submit" />
+		</form>
 		{{/if}}
+		{{#unless confirm}}
 		<div id="installing-pwas" class="widget-container">
 		<div class="widget"><div style="padding-top: 28.47%; background: url(static/images/2.png), url(static/images/1.png); background-size: contain; margin-bottom: 1em;"></div>If you see the '+' icon try pressing it to add an app to your homescreen, it should work offline. Try it here!</div>
 		</div>
@@ -28,5 +49,6 @@
 			{{else}}{{> widget }}{{/if}}
 		{{/each}}
 		</div>
+		{{/unless}}
 	</body>
 </html>

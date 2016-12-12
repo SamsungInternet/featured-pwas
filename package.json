@@ -21,7 +21,8 @@
     "helmet-csp": "^1.2.2",
     "jsdom": "^9.8.3",
     "node-fetch": "^1.6.3",
-    "redis": "^2.6.3"
+    "redis": "^2.6.3",
+    "sw-toolbox": "^3.4.0"
   },
   "engines": {
     "node": "6.2.2"

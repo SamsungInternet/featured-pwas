@@ -12,8 +12,8 @@ const color = require('color');
 const bluebird = require('bluebird');
 const redis = require('redis');
 
-const REDIS_INDEX_KEY = "INDEX_V2";
-const REDIS_ENTRY_NAMESPACE = "ENTRY_V1_";
+const REDIS_INDEX_KEY = "INDEX_V3";
+const REDIS_ENTRY_NAMESPACE = "ENTRY_V3_";
 
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
@@ -69,7 +69,7 @@ const hbs = exphbs.create({
 			return encodeURIComponent(options.fn(this));
 		},
 		fontColor: function(options) {
-			return color(options.fn(this)).light() ? 'black' : 'white';
+			return color(options.fn(this) || '#ffffff').light() ? 'black' : 'white';
 		}
 	}
 });
@@ -81,6 +81,14 @@ app.use('/static', express.static(__dirname + '/static', {
 	maxAge: 3600 * 1000 * 24
 }));
 
+app.use('/sw-toolbox', express.static(__dirname + '/node_modules/sw-toolbox/', {
+	maxAge: 3600 * 1000 * 24
+}));
+
+app.use('/sw.js', express.static(__dirname + '/static/scripts/sw.js', {
+	maxAge: 0
+}));
+
 app.get('/', function (req, res) {
 	client.smembersAsync(REDIS_INDEX_KEY).then(data => {
 		const toFetch = data.reverse().slice(0, 10).map(a => client.getAsync(a));
@@ -90,6 +98,34 @@ app.get('/', function (req, res) {
 	});
 });
 
+app.get('/save/', function (req, res) {
+	if (!req.query.url) {
+		res.status(500);
+		res.end('No url param!');
+		return;
+	}
+	if (!req.query.url) {
+		res.status(500);
+		res.end('No category param!');
+		return;
+	}
+	getWebAppData(req.query.url)
+		.then(data => {
+			data.category = req.query.category.constructor === Array ? req.query.category : [req.query.category];
+			const key = REDIS_ENTRY_NAMESPACE + req.query.url;
+			return client.setAsync(key, JSON.stringify(data))
+				.then(() => client.expireAsync(key, 3600 * 24 * 30))
+				.then(() => client.saddAsync(REDIS_INDEX_KEY, key))
+				.then(() => client.scardAsync(REDIS_INDEX_KEY).then(no => console.log(no)))
+				.then(() => res.redirect('/'));
+		})
+		.catch(e => {
+			res.status(500);
+			res.end(e.message);
+			console.log(e);
+		});
+})
+
 app.get('/get-app-data', function(req, res) {
 	if (!req.query.url) {
 		res.status(500);
@@ -98,21 +134,11 @@ app.get('/get-app-data', function(req, res) {
 	}
 	getWebAppData(req.query.url)
 		.then(data => {
-			const key = REDIS_ENTRY_NAMESPACE + req.query.url;
-			if (req.query.confirm) {
-				client.setAsync(key, JSON.stringify(data))
-					.then(() => client.expireAsync(key, 3600 * 24 * 30))
-					.then(() => client.saddAsync(REDIS_INDEX_KEY, key))
-					.then(() => client.scardAsync(REDIS_INDEX_KEY).then(no => console.log(no)))
-					.then(() => res.redirect('/'))
-					.catch(e => console.log(e.message));
-			} else {
-				res.render('index', {
-					items: [data],
-					confirm: true,
-					url: req.url
-				});
-			}
+			res.render('index', {
+				items: [data],
+				confirm: true,
+				url: req.query.url
+			});
 		})
 		.catch(e => {
 			res.status(500);
