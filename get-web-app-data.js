@@ -32,7 +32,9 @@ function buildWidget(manifest, pageData) {
 	const output = {};
 	output.description = pageData.description;
 	output.name = manifest.name || manifest.shortname || pageData.title;
-	output.icons = manifest.icons.reduce((a,b) => a.sizes > b.sizes ? a : b);
+	if (manifest.icons.length) {
+		output.icons = manifest.icons.reduce((a,b) => a.sizes > b.sizes ? a : b);
+	}
 	output.background_color = manifest.background_color;
 	output.theme_color = manifest.theme_color || pageData.theme_color;
 	output.url = pageData.url;
