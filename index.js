@@ -91,9 +91,10 @@ app.use('/sw.js', express.static(__dirname + '/static/scripts/sw.js', {
 
 app.get('/', function (req, res) {
 	client.smembersAsync(REDIS_INDEX_KEY).then(data => {
-		const toFetch = data.reverse().slice(0, 10).map(a => client.getAsync(a));
+		const toFetch = data.map(a => client.getAsync(a));
 		return Promise.all(toFetch)
 			.then(items => items.map(j => JSON.parse(j)))
+			.then(items => items.sort((a,b) => b.timestamp - a.timestamp).slice(0, 10))
 			.then(items => res.render('index', { items }));
 	});
 });
@@ -111,7 +112,7 @@ app.get('/save/', function (req, res) {
 	}
 	getWebAppData(req.query.url)
 		.then(data => {
-			data.category = req.query.category.constructor === Array ? req.query.category : [req.query.category];
+			data.category = (req.query.category && (req.query.category.constructor === Array ? req.query.category : [req.query.category])) || ['uncategorised'];
 			data.timestamp = Date.now();
 			const key = REDIS_ENTRY_NAMESPACE + req.query.url;
 			return client.setAsync(key, JSON.stringify(data))

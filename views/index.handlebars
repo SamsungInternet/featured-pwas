@@ -4,7 +4,7 @@
 		<meta name="description" content="Featured PWAs picked by the Samsung Internet team.">
 		<link rel="icon" type="image/ico" href="favicon.ico">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, minimum-scale=1.0,target-densitydpi=device-dpi, minimal-ui" />
-		<link rel="icon" sizes="192x192" href="launcher-icon-4x.png">
+		<link rel="icon" sizes="192x192" href="/static/images/icon192.png">
 		<link href='/static/fonts/SamsungOne/fonts.css' rel='stylesheet' type='text/css'>
 		<link href='/static/style.css' rel='stylesheet' type='text/css'>
 		<link rel="manifest" href="/static/manifest.json">
@@ -13,10 +13,10 @@
 	</head>
 	<body>
 		{{#if confirm}}
-		{{#each items}}
-		{{> widget }}
-		{{/each}}
 		<form class="confirm" action="/save/">
+			{{#each items}}
+			{{> widget }}
+			{{/each}}
 			<div class="select">
 				<input type="checkbox" name="category" id="check-all" value="all"><label for="check-all">all</label>
 				<input type="checkbox" name="category" id="check-business" value="business"><label for="check-business">business</label>

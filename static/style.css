@@ -67,12 +67,13 @@ h1 {
 }
 
 .confirm {
-	align-self: stretch;
 	flex-basis: 100%;
 	display: flex;
 	justify-content: flex-end;
 	align-content: flex-end;
 	flex-direction: column;
+	max-width: 30em;
+	margin: 1em auto;
 }
 
 .select {
