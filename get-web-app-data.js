@@ -18,7 +18,7 @@ function buildWidget(manifest, pageData) {
 		src: i.href,
 		sizes: pageData.icons[0].getAttribute('sizes')
 	})) || [];
-	manifest.icons = manifest.icons.concat(icons);
+	manifest.icons = (manifest.icons || []).concat(icons);
 	manifest.icons.forEach(i => {
 		i.sizes = parseInt(i.sizes);
 		if (i.src && !i.src.match(/^https?:/i)) {
