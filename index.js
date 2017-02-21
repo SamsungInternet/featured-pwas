@@ -93,8 +93,11 @@ app.get('/', function (req, res) {
 	client.smembersAsync(REDIS_INDEX_KEY).then(data => {
 		const toFetch = data.map(a => client.getAsync(a));
 		return Promise.all(toFetch)
-			.then(items => items.map(j => JSON.parse(j)))
-			.then(items => items.sort((a,b) => b.timestamp - a.timestamp).slice(0, 10))
+			.then(items => items
+				.map(j => JSON.parse(j))
+				.filter(i => !!i)
+				.sort((a, b) => b.timestamp - a.timestamp)
+				.slice(0, 10))
 			.then(items => res.render('index', { items }));
 	});
 });
