@@ -12,6 +12,12 @@
 		<title>Featured PWAs</title>
 	</head>
 	<body>
+		{{#if add}}
+			<form action="/get-app-data" action="GET">
+				<label>Fetch Web App from URL <input type="url" name="url" id="url" placeholder="https://" /></label>
+				<input type="submit" />
+			</form>
+		{{/if}}
 		{{#if confirm}}
 		<form class="confirm" action="/save/">
 			{{#each items}}
