@@ -14,10 +14,12 @@ function isOk(response) {
 }
 
 function buildWidget(manifest, pageData) {
-	const icons = pageData.icons.map(i => ({
+	const icons = (pageData.icons || []).map(i => ({
 		src: i.href,
-		sizes: pageData.icons[0].getAttribute('sizes')
-	})) || [];
+		sizes: i.getAttribute('sizes')
+	}))
+	.filter(i => !!i.sizes);
+
 	manifest.icons = (manifest.icons || []).concat(icons);
 	manifest.icons.forEach(i => {
 		i.sizes = parseInt(i.sizes);
@@ -53,7 +55,7 @@ function getWebAppData(urlIn) {
 				output.title = title.textContent;
 			}
 
-			const description = window.document.querySelector('meta[name="description"]');
+			const description = window.document.querySelector('meta[name="og:description"]') || window.document.querySelector('meta[name="twitter:description"]') || window.document.querySelector('meta[name="description"]');
 			if (description) {
 				output.description = description.content;
 			}

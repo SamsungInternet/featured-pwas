@@ -18,7 +18,7 @@ const REDIS_ENTRY_NAMESPACE = "ENTRY_V4_";
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
-const client = redis.createClient({
+const client = process.env.REDIS_URL && redis.createClient({
 	url: process.env.REDIS_URL
 });
 
