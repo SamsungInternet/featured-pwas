@@ -32,7 +32,7 @@ function buildWidget(manifest, pageData) {
 		}
 	});
 	const output = {};
-	output.description = pageData.description;
+	output.description = manifest.description || pageData.description;
 	output.name = manifest.name || manifest.shortname || pageData.title;
 	if (manifest.icons.length) {
 		output.icons = manifest.icons.reduce((a,b) => a.sizes > b.sizes ? a : b);
